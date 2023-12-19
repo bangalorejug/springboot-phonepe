@@ -7,6 +7,7 @@ import com.phonepe.sdk.pg.payments.v1.models.request.PgPayRequest;
 import com.phonepe.sdk.pg.payments.v1.models.response.PayPageInstrumentResponse;
 import com.phonepe.sdk.pg.payments.v1.models.response.PgPayResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +61,7 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/pay-return-url")
-    public String paymentNotification(final Model model, final HttpServletRequest request) {
+    public String paymentNotification(final Model model, HttpEntity<String> httpEntity) {
         model.addAttribute("title", "My Title");
         return "index";
     }
