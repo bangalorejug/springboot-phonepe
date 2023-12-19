@@ -9,7 +9,10 @@ import com.phonepe.sdk.pg.payments.v1.models.response.PgPayResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.UUID;
 
@@ -23,7 +26,7 @@ public class PaymentController {
     }
 
     @GetMapping(value = "/pay")
-    public String pay(final Model model) {
+    public RedirectView pay(RedirectAttributes attributes) {
         String merchantId = "PGTESTPAYUAT";
         String saltKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
         Integer saltIndex = 1;
@@ -47,8 +50,7 @@ public class PaymentController {
         PhonePeResponse<PgPayResponse> payResponse = phonepeClient.pay(pgPayRequest);
         PayPageInstrumentResponse payPageInstrumentResponse = (PayPageInstrumentResponse) payResponse.getData().getInstrumentResponse();
         String url = payPageInstrumentResponse.getRedirectInfo().getUrl();
-        model.addAttribute("title", url);
-        return "index";
+        return new RedirectView(url);
     }
 
     @PostMapping(value = "/pay-return-url")
