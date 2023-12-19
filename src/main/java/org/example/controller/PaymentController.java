@@ -6,9 +6,7 @@ import com.phonepe.sdk.pg.payments.v1.models.request.PgPayRequest;
 import com.phonepe.sdk.pg.payments.v1.models.response.PayPageInstrumentResponse;
 import com.phonepe.sdk.pg.payments.v1.models.response.PgPayResponse;
 import com.phonepe.sdk.pg.payments.v1.models.response.PgTransactionStatusResponse;
-import org.example.config.PhonePeConfig;
 import org.example.config.PhonePeProperties;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,18 +40,15 @@ public class PaymentController {
 
     @GetMapping(value = "/pay")
     public RedirectView pay(RedirectAttributes attributes) {
-
         String merchantTransactionId = UUID.randomUUID().toString().substring(0,34);
         long amount = 100;
-        String callbackurl = "http://localhost:8080/pay-return-url";
         String merchantUserId = "MUID123";
-
         PgPayRequest pgPayRequest = PgPayRequest.PayPagePayRequestBuilder()
                 .amount(amount)
                 .merchantId(phonePeProperties.getMerchantId())
                 .merchantTransactionId(merchantTransactionId)
-                .callbackUrl(callbackurl)
-                .redirectUrl(callbackurl)
+                .callbackUrl(this.phonePeProperties.getCallbackUrl())
+                .redirectUrl(this.phonePeProperties.getCallbackUrl())
                 .redirectMode("POST")
                 .merchantUserId(merchantUserId)
                 .build();
@@ -72,11 +67,8 @@ public class PaymentController {
                 && map.get("merchantId").equals(this.phonePeProperties.getMerchantId())
                 && map.containsKey("transactionId")
                 && map.containsKey("providerReferenceId")) {
-
             PhonePeResponse<PgTransactionStatusResponse> statusResponse
                     = this.phonepeClient.checkStatus(map.get("transactionId"));
-
-
             model.addAttribute("title", statusResponse.getData().toString());
             return "index";
         }
@@ -105,7 +97,6 @@ public class PaymentController {
                 data.put(parameterKey, "");
             }
         }
-
         return data;
     }
 

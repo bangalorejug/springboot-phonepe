@@ -6,3 +6,4 @@ spring:
       saltIndex: 1
       env: UAT
       shouldPublishEvents: true
+      callbackUrl: http://localhost:8080/pay-return-url

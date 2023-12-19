@@ -19,14 +19,18 @@ public class PhonePeProperties {
 
     private final boolean shouldPublishEvents;
 
+    private final String callbackUrl;
+
     public PhonePeProperties(String merchantId, String saltKey,
                              Integer saltIndex, Env env,
-                             boolean shouldPublishEvents) {
+                             boolean shouldPublishEvents,
+                             String callbackUrl) {
         this.merchantId = merchantId;
         this.saltKey = saltKey;
         this.saltIndex = saltIndex;
         this.env = env;
         this.shouldPublishEvents = shouldPublishEvents;
+        this.callbackUrl = callbackUrl;
     }
 
     public String getMerchantId() {
@@ -47,5 +51,9 @@ public class PhonePeProperties {
 
     public boolean isShouldPublishEvents() {
         return shouldPublishEvents;
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
     }
 }
