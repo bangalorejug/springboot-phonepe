@@ -6,6 +6,7 @@ import com.phonepe.sdk.pg.payments.v1.PhonePePaymentClient;
 import com.phonepe.sdk.pg.payments.v1.models.request.PgPayRequest;
 import com.phonepe.sdk.pg.payments.v1.models.response.PayPageInstrumentResponse;
 import com.phonepe.sdk.pg.payments.v1.models.response.PgPayResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.UUID;
 
 @Controller
@@ -45,6 +48,8 @@ public class PaymentController {
                 .merchantId(merchantId)
                 .merchantTransactionId(merchantTransactionId)
                 .callbackUrl(callbackurl)
+                .redirectUrl(callbackurl)
+                .redirectMode("POST")
                 .merchantUserId(merchantUserId)
                 .build();
 
@@ -55,7 +60,7 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/pay-return-url")
-    public String paymentNotification(final Model model) {
+    public String paymentNotification(final Model model, final HttpServletRequest request) {
         model.addAttribute("title", "My Title");
         return "index";
     }
