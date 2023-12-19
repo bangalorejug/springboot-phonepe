@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -53,7 +54,7 @@ public class PaymentController {
         return new RedirectView(url);
     }
 
-    @PostMapping(value = "/pay-return-url")
+    @RequestMapping(value = "/pay-return-url")
     public String paymentNotification(final Model model) {
         model.addAttribute("title", "My Title");
         return "index";
