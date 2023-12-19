@@ -10,23 +10,14 @@ import org.springframework.context.annotation.Configuration;
 public class PhonePeConfig {
     /**
      * Builds PhonePePaymentClient.
-     * @param merchantId
-     * @param saltKey
-     * @param saltIndex
-     * @param shouldPublishEvents
-     * @return
+     * @param phonePeProperties
+     * @return PhonePePaymentClient
      */
     @Bean
     PhonePePaymentClient phonePePaymentClient(
-            @Value("${spring.payments.phonepe.merchantId}")
-            final String merchantId,
-            @Value("${spring.payments.phonepe.saltKey}")
-            final String saltKey,
-            @Value("${spring.payments.phonepe.saltIndex}")
-            final Integer saltIndex,
-            @Value("${spring.payments.phonepe.shouldPublishEvents}")
-            final boolean shouldPublishEvents) {
-        return new PhonePePaymentClient(merchantId, saltKey, saltIndex,
-                Env.UAT, shouldPublishEvents);
+            final PhonePeProperties phonePeProperties) {
+        return new PhonePePaymentClient(phonePeProperties.getMerchantId(),
+                phonePeProperties.getSaltKey(), phonePeProperties.getSaltIndex(),
+                phonePeProperties.getEnv(), phonePeProperties.isShouldPublishEvents());
     }
 }

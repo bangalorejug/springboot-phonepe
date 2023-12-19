@@ -1,41 +1,37 @@
 package org.example.controller;
 
-import com.phonepe.sdk.pg.Env;
 import com.phonepe.sdk.pg.common.http.PhonePeResponse;
 import com.phonepe.sdk.pg.payments.v1.PhonePePaymentClient;
 import com.phonepe.sdk.pg.payments.v1.models.request.PgPayRequest;
 import com.phonepe.sdk.pg.payments.v1.models.response.PayPageInstrumentResponse;
 import com.phonepe.sdk.pg.payments.v1.models.response.PgPayResponse;
 import com.phonepe.sdk.pg.payments.v1.models.response.PgTransactionStatusResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import org.example.config.PhonePeConfig;
+import org.example.config.PhonePeProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Controller
 public class PaymentController {
 
     private final PhonePePaymentClient phonepeClient;
-    private final String merchantId;
+    private final PhonePeProperties phonePeProperties;
 
     PaymentController(PhonePePaymentClient phonepeClient,
-                      @Value("${spring.payments.phonepe.merchantId}")
-                      final String merchantId) {
+                      final PhonePeProperties phonePeProperties) {
         this.phonepeClient = phonepeClient;
-        this.merchantId = merchantId ;
+        this.phonePeProperties = phonePeProperties ;
     }
 
     @GetMapping(value = {"/", "/index"})
@@ -54,7 +50,7 @@ public class PaymentController {
 
         PgPayRequest pgPayRequest = PgPayRequest.PayPagePayRequestBuilder()
                 .amount(amount)
-                .merchantId(merchantId)
+                .merchantId(phonePeProperties.getMerchantId())
                 .merchantTransactionId(merchantTransactionId)
                 .callbackUrl(callbackurl)
                 .redirectUrl(callbackurl)
@@ -70,14 +66,15 @@ public class PaymentController {
 
     @RequestMapping(value = "/pay-return-url")
     public String paymentNotification(final Model model, HttpEntity<String> httpEntity) {
-        Map<String, String> map = getAsMap(httpEntity);
+        Map<String, String> map = getMap(httpEntity);
 
         if (map.get("code").equals("PAYMENT_SUCCESS")
-                && map.containsKey("merchantId")
+                && map.get("merchantId").equals(this.phonePeProperties.getMerchantId())
                 && map.containsKey("transactionId")
                 && map.containsKey("providerReferenceId")) {
 
-            PhonePeResponse<PgTransactionStatusResponse> statusResponse = this.phonepeClient.checkStatus(map.get("transactionId"));
+            PhonePeResponse<PgTransactionStatusResponse> statusResponse
+                    = this.phonepeClient.checkStatus(map.get("transactionId"));
 
 
             model.addAttribute("title", statusResponse.getData().toString());
@@ -88,11 +85,12 @@ public class PaymentController {
         return "index";
     }
 
-    public static HashMap<String, String> getAsMap(HttpEntity<String> httpEntity) {
+    public static Map<String, String> getMap(HttpEntity<String> httpEntity) {
 
         HashMap<String, String> data = new HashMap<>();
 
-        final String[] arrParameters = httpEntity.getBody().split("&");
+        final String[] arrParameters = Objects.requireNonNull(httpEntity.getBody())
+                .split("&");
         for (final String tempParameterString : arrParameters) {
 
             final String[] arrTempParameter = tempParameterString
