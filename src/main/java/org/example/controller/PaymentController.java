@@ -32,12 +32,6 @@ public class PaymentController {
         this.phonePeProperties = phonePeProperties ;
     }
 
-    @GetMapping(value = {"/", "/index"})
-    public String index(final Model model) {
-        model.addAttribute("title", "My Title");
-        return "index";
-    }
-
     @GetMapping(value = "/pay")
     public RedirectView pay(RedirectAttributes attributes) {
         String merchantTransactionId = UUID.randomUUID().toString().substring(0,34);
