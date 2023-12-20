@@ -23,19 +23,58 @@ import java.util.UUID;
 @Controller
 public class PaymentController {
 
+    /**
+     *  The max merchant transaction id characters.
+     */
+    private static final int MAX_MERCHANT_TRANSACTION_ID = 34;
+    /**
+     *  The default amount for a transaction.
+     */
+    private static final long DEFAULT_AMOUNT = 100;
+
+    /**
+     * Represents the PhonePe payment client used for processing payments.
+     * This client is expected to be initialized only once and remains constant
+     * throughout the lifecycle of the class.
+     */
     private final PhonePePaymentClient phonepeClient;
+    /**
+     * Represents the PhonePe payment properties used for processing payments.
+     * This client is expected to be initialized only once and remains constant
+     * throughout the lifecycle of the class.
+     */
     private final PhonePeProperties phonePeProperties;
 
-    PaymentController(PhonePePaymentClient phonepeClient,
-                      final PhonePeProperties phonePeProperties) {
-        this.phonepeClient = phonepeClient;
-        this.phonePeProperties = phonePeProperties ;
+    /**
+     * Constructs a new PaymentController with the specified
+     * PhonePePaymentClient and PhonePeProperties.
+     *
+     * @param thePhonepeClient      The PhonePePaymentClient used for processing
+     *                              payments.Should not be null.
+     * @param thePhonePeProperties  The PhonePeProperties containing
+     *                              configuration settings for the PhonePe
+     *                              integration. Should not be null.
+     */
+    PaymentController(final PhonePePaymentClient thePhonepeClient,
+                      final PhonePeProperties thePhonePeProperties) {
+        this.phonepeClient = thePhonepeClient;
+        this.phonePeProperties = thePhonePeProperties;
     }
 
+    /**
+     * Initiates payment process by generating a redirect URL for the pay page.
+     * @param attributes The RedirectAttributes used to add attributes to the
+     *                    redirect request. Should not be null.
+     * @return A RedirectView pointing to the generated Pay Page URL.
+     * @see PgPayRequest
+     * @see PgPayResponse
+     * @see PayPageInstrumentResponse
+     */
     @GetMapping(value = "/pay")
-    public RedirectView pay(RedirectAttributes attributes) {
-        String merchantTransactionId = UUID.randomUUID().toString().substring(0,34);
-        long amount = 100;
+    public RedirectView pay(final RedirectAttributes attributes) {
+        String merchantTransactionId = UUID.randomUUID().toString()
+                .substring(0, MAX_MERCHANT_TRANSACTION_ID);
+        long amount = DEFAULT_AMOUNT;
         String merchantUserId = "MUID123";
         PgPayRequest pgPayRequest = PgPayRequest.PayPagePayRequestBuilder()
                 .amount(amount)
@@ -47,18 +86,31 @@ public class PaymentController {
                 .merchantUserId(merchantUserId)
                 .build();
 
-        PhonePeResponse<PgPayResponse> payResponse = this.phonepeClient.pay(pgPayRequest);
-        PayPageInstrumentResponse payPageInstrumentResponse = (PayPageInstrumentResponse) payResponse.getData().getInstrumentResponse();
+        PhonePeResponse<PgPayResponse> payResponse =
+                                        this.phonepeClient.pay(pgPayRequest);
+        PayPageInstrumentResponse payPageInstrumentResponse =
+                (PayPageInstrumentResponse) payResponse.getData()
+                                                  .getInstrumentResponse();
         String url = payPageInstrumentResponse.getRedirectInfo().getUrl();
         return new RedirectView(url);
     }
-
+    /**
+     * Handles the return URL callback for payment notifications.
+     * @param model      The Model object for adding attributes to the view.
+     *                   Should not be null.
+     * @param httpEntity The HttpEntity representing the HTTP request entity.
+     *                   Should not be null.
+     * @return The name of the view to be rendered, typically "index".
+     * @see PgTransactionStatusResponse
+     */
     @RequestMapping(value = "/pay-return-url")
-    public String paymentNotification(final Model model, HttpEntity<String> httpEntity) {
+    public String paymentNotification(final Model model,
+                                      final HttpEntity<String> httpEntity) {
         Map<String, String> map = getMap(httpEntity);
 
         if (map.get("code").equals("PAYMENT_SUCCESS")
-                && map.get("merchantId").equals(this.phonePeProperties.getMerchantId())
+                && map.get("merchantId").equals(this.phonePeProperties
+                .getMerchantId())
                 && map.containsKey("transactionId")
                 && map.containsKey("providerReferenceId")) {
             PhonePeResponse<PgTransactionStatusResponse> statusResponse
@@ -71,12 +123,20 @@ public class PaymentController {
         return "index";
     }
 
-    public static Map<String, String> getMap(HttpEntity<String> httpEntity) {
+    /**
+     * Handles the get Map.
+     * @param httpEntity The HttpEntity representing the HTTP request entity.
+     *                   Should not be null.
+     * @return data.
+     */
+    public static Map<String, String> getMap(final HttpEntity<String>
+                                                         httpEntity) {
 
         HashMap<String, String> data = new HashMap<>();
 
-        final String[] arrParameters = Objects.requireNonNull(httpEntity.getBody())
-                .split("&");
+        final String[] arrParameters = Objects.requireNonNull(httpEntity
+                        .getBody())
+                        .split("&");
         for (final String tempParameterString : arrParameters) {
 
             final String[] arrTempParameter = tempParameterString

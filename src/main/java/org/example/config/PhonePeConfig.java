@@ -15,7 +15,9 @@ public class PhonePeConfig {
     PhonePePaymentClient phonePePaymentClient(
             final PhonePeProperties phonePeProperties) {
         return new PhonePePaymentClient(phonePeProperties.getMerchantId(),
-                phonePeProperties.getSaltKey(), phonePeProperties.getSaltIndex(),
-                phonePeProperties.getEnv(), phonePeProperties.isShouldPublishEvents());
+                    phonePeProperties.getSaltKey(),
+                    phonePeProperties.getSaltIndex(),
+                    phonePeProperties.getEnv(),
+                    phonePeProperties.isShouldPublishEvents());
     }
 }
