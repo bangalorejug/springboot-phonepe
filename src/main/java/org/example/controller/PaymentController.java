@@ -78,10 +78,10 @@ public class PaymentController {
         String merchantUserId = "MUID123";
         PgPayRequest pgPayRequest = PgPayRequest.PayPagePayRequestBuilder()
                 .amount(amount)
-                .merchantId(phonePeProperties.getMerchantId())
+                .merchantId(phonePeProperties.merchantId())
                 .merchantTransactionId(merchantTransactionId)
-                .callbackUrl(this.phonePeProperties.getCallbackUrl())
-                .redirectUrl(this.phonePeProperties.getCallbackUrl())
+                .callbackUrl(this.phonePeProperties.callbackUrl())
+                .redirectUrl(this.phonePeProperties.callbackUrl())
                 .redirectMode("POST")
                 .merchantUserId(merchantUserId)
                 .build();
@@ -110,7 +110,7 @@ public class PaymentController {
 
         if (map.get("code").equals("PAYMENT_SUCCESS")
                 && map.get("merchantId").equals(this.phonePeProperties
-                .getMerchantId())
+                .merchantId())
                 && map.containsKey("transactionId")
                 && map.containsKey("providerReferenceId")) {
             PhonePeResponse<PgTransactionStatusResponse> statusResponse
