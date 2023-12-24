@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.model.Payment;
 import org.example.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -26,15 +28,22 @@ public class PaymentController {
     private PaymentService paymentService;
 
     /**
+     *  The default amount for a transaction.
+     */
+    private static final long DEFAULT_AMOUNT = 100;
+
+    /**
      * Initiates payment process by generating a redirect URL for the pay page.
      * @param attributes The RedirectAttributes used to add attributes to the
      *                    redirect request. Should not be null.
      * @return A RedirectView pointing to the generated Pay Page URL.
      */
     @GetMapping(value = "/pay")
-    public RedirectView pay(final RedirectAttributes attributes) {
-        String url = paymentService.payAmount();
-        return new RedirectView(url);
+    public RedirectView pay(final RedirectAttributes attributes) throws MalformedURLException {
+        Payment payment = new Payment();
+        payment.setUserName("Sathish");
+        payment.setAmount(DEFAULT_AMOUNT);
+        return new RedirectView(paymentService.pay(payment).toString());
     }
     /**
      * Handles the return URL callback for payment notifications.

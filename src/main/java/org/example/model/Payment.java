@@ -4,7 +4,7 @@ public class Payment {
 
     private String transactionId;
     private String userName;
-    private double amount;
+    private long amount;
 
     public String getTransactionId() {
         return transactionId;
@@ -22,11 +22,11 @@ public class Payment {
         this.userName = userName;
     }
 
-    public double getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(final double amount) {
+    public void setAmount(final long amount) {
         this.amount = amount;
     }
 }
