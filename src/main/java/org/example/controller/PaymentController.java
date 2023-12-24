@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.model.Payment;
 import org.example.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,15 +56,17 @@ public class PaymentController {
      */
     @RequestMapping(value = "/pay-return-url")
     public String paymentNotification(final Model model,
-            @RequestParam(name = "code") final String code,
-            @RequestParam(name = "transactionId") final String transactionId,
-            @RequestParam(name = "merchantId") final String merchantId,
-            @RequestParam(name = "providerReferenceId")
-                                          final String providerReferenceId) {
+                                      @RequestParam(name = "code") final String code,
+                                      @RequestParam(name = "transactionId") final String transactionId,
+                                      @RequestParam(name = "merchantId") final String merchantId,
+                                      @RequestParam(name = "providerReferenceId")
+                                          final String providerReferenceId,
+                                      @RequestParam(name = "amount") final long amount,
+                                      HttpEntity<String> httpEntity) {
 
         model.addAttribute("response", paymentService.getStatus(code,
                                           transactionId, merchantId,
-                                          providerReferenceId));
+                                          providerReferenceId, amount));
         return "payment_success";
     }
 

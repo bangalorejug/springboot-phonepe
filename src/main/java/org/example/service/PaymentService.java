@@ -13,10 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class PaymentService {
+
+    private final Map<String, Payment> payments ;
 
     /**
      * Represents the PhonePe payment client used for processing payments.
@@ -33,6 +37,10 @@ public class PaymentService {
     @Autowired
     private PhonePeProperties phonePeProperties;
 
+    public PaymentService() {
+        this.payments = new ConcurrentHashMap<>();
+    }
+
     /**
      * Initiates payment process by generating a redirect URL for the pay page.
      *                    redirect request. Should not be null.
@@ -45,6 +53,8 @@ public class PaymentService {
     public URL pay(final Payment payment) throws MalformedURLException {
 
         payment.setTransactionId(UUID.randomUUID().toString());
+
+        this.payments.put(payment.getTransactionId(), payment);
 
         PgPayRequest pgPayRequest = PgPayRequest.PayPagePayRequestBuilder()
                 .amount(payment.getAmount())
@@ -72,16 +82,24 @@ public class PaymentService {
      * @param transactionId
      * @return The name of the view to be rendered, typically "index".
      */
-    public String getStatus(final String code, final String transactionId,
+    public String getStatus(final String code,
+                            final String transactionId,
                             final String merchantId,
-                            final String providerReferenceId) {
+                            final String providerReferenceId,
+                            final long amount) {
         if (code.equals("PAYMENT_SUCCESS")
                 && merchantId.equals(this.phonePeProperties.merchantId())
                 && transactionId != null
                 && providerReferenceId != null) {
-            PhonePeResponse<PgTransactionStatusResponse> statusResponse
-                    = this.phonepeClient.checkStatus(transactionId);
-            return statusResponse.getData().toString();
+            Payment payment = this.payments.get(transactionId);
+            if (amount == payment.getAmount()) {
+                PhonePeResponse<PgTransactionStatusResponse> statusResponse
+                        = this.phonepeClient.checkStatus(transactionId);
+                return statusResponse.getData().toString();
+            } else {
+                throw new IllegalArgumentException("Payment invalid " + transactionId);
+            }
+
         }
         return "My Title";
     }
