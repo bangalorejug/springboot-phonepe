@@ -68,14 +68,14 @@ public class PaymentService {
      * Handles the return URL callback for payment notifications.
      * @return The name of the view to be rendered, typically "index".
      */
-    public String handlePaymentNotification(final Map<String, String> map) {
-        if (map.get("code").equals("PAYMENT_SUCCESS")
-                && map.get("merchantId").equals(this.phonePeProperties
-                .merchantId())
-                && map.containsKey("transactionId")
-                && map.containsKey("providerReferenceId")) {
+    public String getStatus(final String code, final String transactionId,
+                            final String merchantId, final String providerReferenceId) {
+        if (code.equals("PAYMENT_SUCCESS")
+                && merchantId.equals(this.phonePeProperties.merchantId())
+                && transactionId != null
+                && providerReferenceId != null) {
             PhonePeResponse<PgTransactionStatusResponse> statusResponse
-                    = this.phonepeClient.checkStatus(map.get("transactionId"));
+                    = this.phonepeClient.checkStatus(transactionId);
             return statusResponse.getData().toString();
         }
         return "My Title";
