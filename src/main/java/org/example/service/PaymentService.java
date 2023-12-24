@@ -82,7 +82,7 @@ public class PaymentService {
      * @param transactionId
      * @return The name of the view to be rendered, typically "index".
      */
-    public String getStatus(final String code,
+    public Payment getStatus(final String code,
                             final String transactionId,
                             final String merchantId,
                             final String providerReferenceId,
@@ -101,6 +101,6 @@ public class PaymentService {
             }
 
         }
-        return "My Title";
+        return null;
     }
 }

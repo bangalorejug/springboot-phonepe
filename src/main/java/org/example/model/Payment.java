@@ -1,5 +1,7 @@
 package org.example.model;
 
+import java.time.LocalDateTime;
+
 public class Payment {
 
     /**
@@ -14,6 +16,12 @@ public class Payment {
      * long Variable amount.
      */
     private long amount;
+
+    private String status;
+
+    private String response;
+
+    private LocalDateTime createdAt;
     /**
      * get Transaction Id.
      * @return transactionId
