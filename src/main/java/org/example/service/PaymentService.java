@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -38,6 +37,7 @@ public class PaymentService {
      * Initiates payment process by generating a redirect URL for the pay page.
      *                    redirect request. Should not be null.
      * @return A RedirectView pointing to the generated Pay Page URL.
+     * @param payment
      * @see PgPayRequest
      * @see PgPayResponse
      * @see PayPageInstrumentResponse
@@ -66,10 +66,15 @@ public class PaymentService {
 
     /**
      * Handles the return URL callback for payment notifications.
+     * @param code
+     * @param merchantId
+     * @param providerReferenceId
+     * @param transactionId
      * @return The name of the view to be rendered, typically "index".
      */
     public String getStatus(final String code, final String transactionId,
-                            final String merchantId, final String providerReferenceId) {
+                            final String merchantId,
+                            final String providerReferenceId) {
         if (code.equals("PAYMENT_SUCCESS")
                 && merchantId.equals(this.phonePeProperties.merchantId())
                 && transactionId != null

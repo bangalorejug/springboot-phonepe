@@ -2,31 +2,58 @@ package org.example.model;
 
 public class Payment {
 
+    /**
+     * String Variable transactionId.
+     */
     private String transactionId;
+    /**
+     * String Variable userName.
+     */
     private String userName;
+    /**
+     * long Variable amount.
+     */
     private long amount;
-
+    /**
+     * get Transaction Id.
+     * @return transactionId
+     */
     public String getTransactionId() {
         return transactionId;
     }
-
-    public void setTransactionId(final String transactionId) {
-        this.transactionId = transactionId;
+    /**
+     * set Transaction Id.
+     * @param theTransactionId
+     */
+    public void setTransactionId(final String theTransactionId) {
+        this.transactionId = theTransactionId;
     }
-
+    /**
+     * get Username.
+     * @return userName
+     */
     public String getUserName() {
         return userName;
     }
-
-    public void setUserName(final String userName) {
-        this.userName = userName;
+    /**
+     * set Username.
+     * @param theUserName
+     */
+    public void setUserName(final String theUserName) {
+        this.userName = theUserName;
     }
-
+    /**
+     * get amount.
+     * @return amount
+     */
     public long getAmount() {
         return amount;
     }
-
-    public void setAmount(final long amount) {
-        this.amount = amount;
+    /**
+     * set amount.
+     * @param anAmount
+     */
+    public void setAmount(final long anAmount) {
+        this.amount = anAmount;
     }
 }
