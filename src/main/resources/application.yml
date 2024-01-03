@@ -1,9 +1,9 @@
 spring:
   payments:
     phonepe:
-      merchantId: ${PHONEPE_MERCHANT_ID}
-      saltKey: ${PHONEPE_SALT_KEY}
-      saltIndex: ${PHONEPE_SALT_KEY_INDEX}
+      merchantId: PGTESTPAYUAT
+      saltKey: 099eb0cd-02cf-4e2a-8aca-3e6c6aff0399
+      saltIndex: 1
       env: UAT
       shouldPublishEvents: true
       callbackUrl: http://localhost:8080/pay-return-url
