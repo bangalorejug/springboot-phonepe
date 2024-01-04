@@ -49,20 +49,22 @@ public class PaymentController {
      * @param model      The Model object for adding attributes to the view.
      *                   Should not be null.
      * @param code
+     * @param amount
      * @param merchantId
      * @param providerReferenceId
      * @param transactionId
+     * @param httpEntity
      * @return The name of the view to be rendered, typically "index".
      */
     @RequestMapping(value = "/pay-return-url")
     public String paymentNotification(final Model model,
-                                      @RequestParam(name = "code") final String code,
-                                      @RequestParam(name = "transactionId") final String transactionId,
-                                      @RequestParam(name = "merchantId") final String merchantId,
-                                      @RequestParam(name = "providerReferenceId")
-                                          final String providerReferenceId,
-                                      @RequestParam(name = "amount") final long amount,
-                                      HttpEntity<String> httpEntity) {
+          @RequestParam(name = "code") final String code,
+          @RequestParam(name = "transactionId") final String transactionId,
+          @RequestParam(name = "merchantId") final String merchantId,
+          @RequestParam(name = "providerReferenceId")
+              final String providerReferenceId,
+          @RequestParam(name = "amount") final long amount,
+           final HttpEntity<String> httpEntity) {
 
         model.addAttribute("response", paymentService.getStatus(code,
                                           transactionId, merchantId,
