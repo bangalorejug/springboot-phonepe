@@ -19,8 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class PaymentService {
-
-    private final Map<String, Payment> payments ;
+    /**
+     * Map<String, Payment> variable payments.
+     */
+    private final Map<String, Payment> payments;
 
     /**
      * Represents the PhonePe payment client used for processing payments.
@@ -36,7 +38,9 @@ public class PaymentService {
      */
     @Autowired
     private PhonePeProperties phonePeProperties;
-
+    /**
+     * PaymentService variable payments.
+     */
     public PaymentService() {
         this.payments = new ConcurrentHashMap<>();
     }
@@ -80,6 +84,7 @@ public class PaymentService {
      * @param merchantId
      * @param providerReferenceId
      * @param transactionId
+     * @param amount
      * @return The name of the view to be rendered, typically "index".
      */
     public Payment getStatus(final String code,
@@ -97,7 +102,8 @@ public class PaymentService {
                         = this.phonepeClient.checkStatus(transactionId);
                 return statusResponse.getData().toString();
             } else {
-                throw new IllegalArgumentException("Payment invalid " + transactionId);
+                throw new IllegalArgumentException("Payment invalid "
+                        + transactionId);
             }
 
         }

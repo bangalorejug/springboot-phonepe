@@ -16,11 +16,17 @@ public class Payment {
      * long Variable amount.
      */
     private long amount;
-
+    /**
+     * string variable status.
+     */
     private String status;
-
+    /**
+     * string variable response.
+     */
     private String response;
-
+    /**
+     * LocalDateTime variable createdAt.
+     */
     private LocalDateTime createdAt;
     /**
      * get Transaction Id.
