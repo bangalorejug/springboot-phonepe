@@ -66,9 +66,10 @@ public class PaymentController {
           @RequestParam(name = "amount") final long amount,
            final HttpEntity<String> httpEntity) {
 
-        model.addAttribute("response", paymentService.getStatus(code,
-                                          transactionId, merchantId,
-                                          providerReferenceId, amount));
+        Object payment
+                = paymentService.getStatus(code,transactionId,
+                merchantId,providerReferenceId, amount);
+        model.addAttribute("response", payment);
         return "payment_success";
     }
 

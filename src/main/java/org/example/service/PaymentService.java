@@ -87,7 +87,7 @@ public class PaymentService {
      * @param amount
      * @return The name of the view to be rendered, typically "index".
      */
-    public Payment getStatus(final String code,
+    public Object getStatus(final String code,
                             final String transactionId,
                             final String merchantId,
                             final String providerReferenceId,
@@ -100,7 +100,7 @@ public class PaymentService {
             if (amount == payment.getAmount()) {
                 PhonePeResponse<PgTransactionStatusResponse> statusResponse
                         = this.phonepeClient.checkStatus(transactionId);
-                return statusResponse.getData().toString();
+                return statusResponse.getData();
             } else {
                 throw new IllegalArgumentException("Payment invalid "
                         + transactionId);
